@@ -65,3 +65,32 @@ test('round trip', () => {
   const orig = '0306406152';
   assert.equal(to10(to13(orig)), orig);
 });
+
+test('validate accepts lowercase x check digit', () => {
+  const r = validate('123456789x');
+  assert.equal(r.valid, true);
+  assert.equal(r.type, 'isbn-10');
+  assert.equal(r.normalized, '123456789X');
+});
+
+test('validate rejects empty input', () => {
+  const r = validate('');
+  assert.equal(r.valid, false);
+});
+
+test('to_13 is idempotent on an ISBN-13', () => {
+  assert.equal(to13('9783161484100'), '9783161484100');
+});
+
+test('to_10 returns the ISBN-10 unchanged', () => {
+  assert.equal(to10('0306406152'), '0306406152');
+});
+
+test('to_13 throws on invalid input', () => {
+  assert.throws(() => to13('not-an-isbn'));
+});
+
+test('round trip preserves an X check digit', () => {
+  const orig = '123456789X';
+  assert.equal(to10(to13(orig)), orig);
+});
